@@ -14,6 +14,7 @@
 @end
 
 @implementation DetailViewController
+@synthesize dataSource, table;
 
 - (void)dealloc
 {
@@ -45,7 +46,8 @@
     // Update the user interface for the detail item.
 
     if (self.detailItem) {
-        self.detailDescriptionLabel.text = [self.detailItem description];
+        NSLog(@"tests %@",self.detailItem);
+        self.detailDescriptionLabel.text = [self.detailItem objectForKey:@"displayName"];
     }
 }
 
@@ -54,6 +56,9 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     [self configureView];
+    DataSource *ds=[[DataSource alloc] init];
+    self.dataSource = ds;
+    [ds release];
 }
 
 - (void)didReceiveMemoryWarning
@@ -85,6 +90,48 @@
     // Called when the view is shown again in the split view, invalidating the button and popover controller.
     [self.navigationItem setLeftBarButtonItem:nil animated:YES];
     self.masterPopoverController = nil;
+}
+
+#pragma mark - Table View
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    //    NSLog(@"test");
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    //   NSLog(@"number of rows %d",[dataSource.getMenuData count]);
+    return [dataSource.getItemsList count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    //    NSLog(@"cell nr: %d", [indexPath row]);
+    static NSString *CellIdentifier = @"Cell";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+    }
+    
+    //    NSMutableDictionary *object = _objects[indexPath.row];
+    
+    //    NSLog(@"obj count: %d", [_objects count]);
+    //    NSLog(@"datasource: %@", [[dataSource getMenuData] indexPath.row]);
+   cell.textLabel.text = [[[dataSource getItemsList] objectAtIndex:indexPath.row] objectForKey:@"displayName"];
+    
+    return cell;
+}
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"uzspieda uz %@", [[[dataSource getItemsList] objectAtIndex:indexPath.row] objectForKey:@"displayName"]);
+    //    NSDate *object = _objects[indexPath.row];
+//    self.detailViewController.detailItem = [[dataSource getMenuData] objectAtIndex:indexPath.row];
+//    ItemViewController *itemViewController=[ItemViewController initialize ]
+    ItemViewController *itemViewController = [[[ItemViewController alloc] initWithNibName:@"ItemViewController" bundle:nil] autorelease];
+    [self.navigationController pushViewController:itemViewController animated:YES];
 }
 
 @end

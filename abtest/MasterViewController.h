@@ -7,11 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DataSource.h"
 
 @class DetailViewController;
 
-@interface MasterViewController : UITableViewController
+@interface MasterViewController : UITableViewController{
+    DataSource *dataSource;
+}
 
+@property (strong, nonatomic) DataSource *dataSource;
 @property (strong, nonatomic) DetailViewController *detailViewController;
 
 @end
